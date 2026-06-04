@@ -1,0 +1,443 @@
+/**
+ * Codecor Rota el Porteño
+ * admin.js - Lógica del panel de administración (Vanilla JS)
+ */
+
+const initApp = async () => {
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+        const errorBanner = document.createElement('div');
+        errorBanner.className = 'body-md text-error p-lg bg-surface';
+        errorBanner.style.position = 'fixed';
+        errorBanner.style.top = '0';
+        errorBanner.style.left = '0';
+        errorBanner.style.width = '100%';
+        errorBanner.style.zIndex = '9999';
+        errorBanner.style.textAlign = 'center';
+        errorBanner.textContent = "Error crítico: Cliente Supabase no inicializado.";
+        document.body.prepend(errorBanner);
+        return;
+    }
+
+    // --- Referencias al DOM ---
+    const loginView = document.getElementById('login-view');
+    const dashboardView = document.getElementById('dashboard-view');
+    const loginForm = document.getElementById('login-form');
+    const loginError = document.getElementById('login-error');
+    const btnLogout = document.getElementById('btn-logout');
+
+    const navItems = document.querySelectorAll('.nav-item[data-target]');
+    const panels = document.querySelectorAll('.panel');
+
+    // Modales y formularios (Inmuebles)
+    const modalInmueble = document.getElementById('modal-inmueble');
+    const formInmueble = document.getElementById('form-inmueble');
+    const btnAddInmueble = document.getElementById('btn-add-inmueble');
+
+    // Modales y formularios (Servicios)
+    const modalServicio = document.getElementById('modal-servicio');
+    const formServicio = document.getElementById('form-servicio');
+    const btnAddServicio = document.getElementById('btn-add-servicio');
+
+    // --- Autenticación ---
+
+    // Comprobar estado de sesión
+    let session = null;
+    try {
+        const response = await supabase.auth.getSession();
+        session = response.data ? response.data.session : null;
+    } catch (err) {
+        console.error("Error obteniendo sesión:", err);
+    }
+    
+    if (session) {
+        showDashboard();
+    } else {
+        showLogin();
+    }
+
+    // Escuchar cambios de autenticación
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN') {
+            showDashboard();
+        } else if (event === 'SIGNED_OUT') {
+            showLogin();
+        }
+    });
+
+    // Handle Login Submit
+    const btnLoginSubmit = document.getElementById('btn-login-submit');
+    if (btnLoginSubmit) {
+        btnLoginSubmit.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            // Validar campos manualmente al no usar submit
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                loginError.textContent = 'Por favor, rellena ambos campos.';
+                loginError.style.display = 'block';
+                return;
+            }
+            
+            loginError.style.display = 'none';
+            btnLoginSubmit.disabled = true;
+        
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            });
+
+            if (error) {
+                loginError.textContent = error.message === 'Email not confirmed' 
+                    ? 'Debes confirmar tu correo electrónico. Revisa tu bandeja de entrada.' 
+                    : `Error: ${error.message}`;
+                loginError.style.display = 'block';
+                btnLoginSubmit.textContent = 'Iniciar Sesión';
+                btnLoginSubmit.disabled = false;
+            } else {
+                // Forzar visualización del dashboard tras login exitoso
+                btnLoginSubmit.textContent = 'Iniciar Sesión';
+                btnLoginSubmit.disabled = false;
+                showDashboard();
+            }
+        } catch (err) {
+            loginError.textContent = 'Error inesperado al intentar iniciar sesión.';
+            loginError.style.display = 'block';
+            btnLoginSubmit.textContent = 'Iniciar Sesión';
+            btnLoginSubmit.disabled = false;
+        }
+    });
+    
+    // Permitir enviar con la tecla Enter
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                btnLoginSubmit.click();
+            }
+        });
+    }
+
+    }
+
+
+    // Handle Logout
+    btnLogout.addEventListener('click', async () => {
+        await supabase.auth.signOut();
+    });
+
+    // --- Navegación del Dashboard ---
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Actualizar clase activa en nav
+            navItems.forEach(n => n.classList.remove('active'));
+            item.classList.add('active');
+
+            // Mostrar el panel correspondiente
+            const targetId = item.getAttribute('data-target');
+            panels.forEach(p => p.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+
+            // Cargar datos si es necesario
+            loadPanelData(targetId);
+        });
+    });
+
+    // Funciones de Vista
+    function showLogin() {
+        dashboardView.style.display = 'none';
+        loginView.style.display = 'flex';
+        loginForm.reset();
+    }
+
+    function showDashboard() {
+        loginView.style.display = 'none';
+        dashboardView.style.display = 'flex';
+        // Cargar datos iniciales (Inmuebles que es el activo por defecto)
+        loadPanelData('panel-inmuebles');
+    }
+
+    function loadPanelData(panelId) {
+        if (panelId === 'panel-inmuebles') loadInmuebles();
+        else if (panelId === 'panel-servicios') loadServicios();
+        else if (panelId === 'panel-mensajes') loadMensajes();
+    }
+
+    // --- Modal de Confirmación ---
+    function confirmAction(message, onConfirm) {
+        const confirmModal = document.createElement('div');
+        confirmModal.className = 'modal active';
+        
+        const modalContent = document.createElement('div');
+        modalContent.className = 'modal-content';
+        modalContent.style.maxWidth = '400px';
+        modalContent.style.textAlign = 'center';
+        
+        const title = document.createElement('h3');
+        title.className = 'headline-md mb-md';
+        title.textContent = 'Confirmar Acción';
+        
+        const msg = document.createElement('p');
+        msg.className = 'body-md mb-lg';
+        msg.textContent = message;
+        
+        const btnGroup = document.createElement('div');
+        btnGroup.className = 'flex justify-center gap-sm';
+        
+        const btnCancel = document.createElement('button');
+        btnCancel.className = 'btn btn-secondary dark';
+        btnCancel.textContent = 'Cancelar';
+        btnCancel.onclick = () => confirmModal.remove();
+        
+        const btnConfirm = document.createElement('button');
+        btnConfirm.className = 'btn btn-primary';
+        btnConfirm.textContent = 'Aceptar';
+        btnConfirm.onclick = () => {
+            onConfirm();
+            confirmModal.remove();
+        };
+        
+        btnGroup.appendChild(btnCancel);
+        btnGroup.appendChild(btnConfirm);
+        
+        modalContent.appendChild(title);
+        modalContent.appendChild(msg);
+        modalContent.appendChild(btnGroup);
+        confirmModal.appendChild(modalContent);
+        
+        document.body.appendChild(confirmModal);
+    }
+
+    // --- Modales ---
+    window.closeModal = function(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    };
+
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+    }
+
+    // --- CRUD Inmuebles ---
+    const tbodyInmuebles = document.querySelector('#table-inmuebles tbody');
+
+    btnAddInmueble.addEventListener('click', () => {
+        formInmueble.reset();
+        document.getElementById('inmueble-id').value = '';
+        document.getElementById('modal-inmueble-title').textContent = 'Añadir Inmueble';
+        openModal('modal-inmueble');
+    });
+
+    async function loadInmuebles() {
+        const { data, error } = await supabase.from('properties').select('*').order('created_at', { ascending: false });
+        if (error) { console.error("Error cargando inmuebles:", error); return; }
+        
+        tbodyInmuebles.textContent = '';
+        data.forEach(item => {
+            const tr = document.createElement('tr');
+            
+            const tdId = document.createElement('td'); tdId.textContent = item.id;
+            const tdTitle = document.createElement('td'); tdTitle.textContent = item.title;
+            const tdPrice = document.createElement('td'); tdPrice.textContent = `${item.price} €`;
+            const tdStatus = document.createElement('td'); tdStatus.textContent = item.status === 'venta' ? 'En Venta' : 'En Alquiler';
+            
+            const tdActions = document.createElement('td');
+            const btnEdit = document.createElement('button');
+            btnEdit.className = 'btn btn-primary btn-sm';
+            btnEdit.style.marginRight = '0.5rem';
+            btnEdit.textContent = 'Editar';
+            btnEdit.onclick = () => editInmueble(item);
+            
+            const btnDelete = document.createElement('button');
+            btnDelete.className = 'btn btn-secondary dark btn-sm';
+            btnDelete.textContent = 'Borrar';
+            btnDelete.onclick = () => deleteInmueble(item.id);
+
+            tdActions.appendChild(btnEdit);
+            tdActions.appendChild(btnDelete);
+
+            tr.appendChild(tdId);
+            tr.appendChild(tdTitle);
+            tr.appendChild(tdPrice);
+            tr.appendChild(tdStatus);
+            tr.appendChild(tdActions);
+            
+            tbodyInmuebles.appendChild(tr);
+        });
+    }
+
+    formInmueble.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('inmueble-id').value;
+        const payload = {
+            title: document.getElementById('inmueble-title').value,
+            description: document.getElementById('inmueble-desc').value,
+            price: document.getElementById('inmueble-price').value,
+            status: document.getElementById('inmueble-status').value,
+            image_url: document.getElementById('inmueble-img').value
+        };
+
+        if (id) {
+            // Update
+            const { error } = await supabase.from('properties').update(payload).eq('id', id);
+            if (error) console.error("Error al actualizar:", error);
+        } else {
+            // Insert
+            const { error } = await supabase.from('properties').insert([payload]);
+            if (error) console.error("Error al insertar:", error);
+        }
+        
+        closeModal('modal-inmueble');
+        loadInmuebles();
+    });
+
+    function editInmueble(item) {
+        document.getElementById('inmueble-id').value = item.id;
+        document.getElementById('inmueble-title').value = item.title;
+        document.getElementById('inmueble-desc').value = item.description;
+        document.getElementById('inmueble-price').value = item.price;
+        document.getElementById('inmueble-status').value = item.status;
+        document.getElementById('inmueble-img').value = item.image_url;
+        document.getElementById('modal-inmueble-title').textContent = 'Editar Inmueble';
+        openModal('modal-inmueble');
+    }
+
+    async function deleteInmueble(id) {
+        confirmAction("¿Está seguro de que desea borrar este inmueble?", async () => {
+            const { error } = await supabase.from('properties').delete().eq('id', id);
+            if (error) {
+                console.error("Error al borrar:", error);
+            } else {
+                loadInmuebles();
+            }
+        });
+    }
+
+    // --- CRUD Servicios ---
+    const tbodyServicios = document.querySelector('#table-servicios tbody');
+
+    if (btnAddServicio) {
+        btnAddServicio.addEventListener('click', () => {
+            formServicio.reset();
+            document.getElementById('servicio-id').value = '';
+            document.getElementById('modal-servicio-title').textContent = 'Añadir Servicio';
+            openModal('modal-servicio');
+        });
+    }
+
+    async function loadServicios() {
+        const { data, error } = await supabase.from('services').select('*').order('id', { ascending: true });
+        if (error) { console.error("Error cargando servicios:", error); return; }
+        
+        tbodyServicios.textContent = '';
+        data.forEach(item => {
+            const tr = document.createElement('tr');
+            
+            const tdName = document.createElement('td'); tdName.textContent = item.name;
+            const tdIcon = document.createElement('td');
+            const spanIcon = document.createElement('span');
+            spanIcon.className = 'material-symbols-outlined';
+            spanIcon.textContent = item.icon;
+            tdIcon.appendChild(spanIcon);
+            
+            const tdActions = document.createElement('td');
+            const btnEdit = document.createElement('button');
+            btnEdit.className = 'btn btn-primary btn-sm';
+            btnEdit.style.marginRight = '0.5rem';
+            btnEdit.textContent = 'Editar';
+            btnEdit.onclick = () => editServicio(item);
+            
+            const btnDelete = document.createElement('button');
+            btnDelete.className = 'btn btn-secondary dark btn-sm';
+            btnDelete.textContent = 'Borrar';
+            btnDelete.onclick = () => deleteServicio(item.id);
+
+            tdActions.appendChild(btnEdit);
+            tdActions.appendChild(btnDelete);
+
+            tr.appendChild(tdName);
+            tr.appendChild(tdIcon);
+            tr.appendChild(tdActions);
+            tbodyServicios.appendChild(tr);
+        });
+    }
+
+    if (formServicio) {
+        formServicio.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('servicio-id').value;
+            const payload = {
+                name: document.getElementById('servicio-name').value,
+                icon: document.getElementById('servicio-icon').value
+            };
+
+            if (id) {
+                // Update
+                const { error } = await supabase.from('services').update(payload).eq('id', id);
+                if (error) console.error("Error al actualizar:", error);
+            } else {
+                // Insert
+                const { error } = await supabase.from('services').insert([payload]);
+                if (error) console.error("Error al insertar:", error);
+            }
+            
+            closeModal('modal-servicio');
+            loadServicios();
+        });
+    }
+
+    function editServicio(item) {
+        document.getElementById('servicio-id').value = item.id;
+        document.getElementById('servicio-name').value = item.name;
+        document.getElementById('servicio-icon').value = item.icon;
+        document.getElementById('modal-servicio-title').textContent = 'Editar Servicio';
+        openModal('modal-servicio');
+    }
+
+    async function deleteServicio(id) {
+        confirmAction("¿Está seguro de que desea borrar este servicio?", async () => {
+            const { error } = await supabase.from('services').delete().eq('id', id);
+            if (error) {
+                console.error("Error al borrar:", error);
+            } else {
+                loadServicios();
+            }
+        });
+    }
+
+    // --- CRUD Mensajes ---
+    const tbodyMensajes = document.querySelector('#table-mensajes tbody');
+    async function loadMensajes() {
+        const { data, error } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
+        if (error) { console.error("Error cargando mensajes:", error); return; }
+        
+        tbodyMensajes.textContent = '';
+        data.forEach(item => {
+            const tr = document.createElement('tr');
+            
+            const date = new Date(item.created_at).toLocaleDateString('es-ES');
+            
+            const tdDate = document.createElement('td'); tdDate.textContent = date;
+            const tdName = document.createElement('td'); tdName.textContent = item.name;
+            const tdEmail = document.createElement('td'); tdEmail.textContent = item.email;
+            const tdService = document.createElement('td'); tdService.textContent = item.service_type;
+            const tdMsg = document.createElement('td'); tdMsg.textContent = item.message;
+
+            tr.appendChild(tdDate);
+            tr.appendChild(tdName);
+            tr.appendChild(tdEmail);
+            tr.appendChild(tdService);
+            tr.appendChild(tdMsg);
+            tbodyMensajes.appendChild(tr);
+        });
+    }
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    initApp();
+}

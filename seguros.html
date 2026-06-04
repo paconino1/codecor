@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codecor Rota el Porteño - Seguros</title>
+    <meta name="description" content="Catálogo de seguros corporativos a medida.">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="assets/img/logo.png" alt="Logo Codecor Rota el Porteño" class="logo-image">
+                <div class="logo-text-container">
+                    <span class="logo-text-main">Codecor Rota</span>
+                    <span class="logo-text-sub">el Porteño</span>
+                </div>
+            </div>
+            
+            <nav class="nav-desktop">
+                <a class="nav-link" href="index.html#inicio">Inicio</a>
+                <a class="nav-link" href="index.html#nosotros">Quiénes Somos</a>
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle active" href="index.html#servicios">Servicios</a>
+                    <div class="dropdown-menu">
+                        <a href="inmobiliaria.html" class="dropdown-item">Inmobiliaria</a>
+                        <a href="index.html?servicio=inversiones#contacto" class="dropdown-item service-select" data-service="inversiones">Inversiones</a>
+                        <a href="index.html?servicio=construccion#contacto" class="dropdown-item service-select" data-service="construccion">Construcción</a>
+                        <a href="index.html?servicio=mantenimiento#contacto" class="dropdown-item service-select" data-service="mantenimiento">Mantenimiento</a>
+                        <a href="seguros.html" class="dropdown-item">Seguros</a>
+                    </div>
+                </div>
+                <a class="nav-link" href="index.html#contacto">Contacto</a>
+            </nav>
+
+            <div class="nav-desktop">
+                <a href="index.html#contacto" class="btn btn-primary btn-sm">Consultar</a>
+            </div>
+
+            <button class="menu-toggle" id="mobile-menu-btn" aria-label="Abrir menú">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="pt-80">
+        <section id="seguros-catalogo" class="section bg-surface min-h-screen-nav">
+            <div class="container flex flex-col gap-xl">
+                <div class="text-center max-w-600 mx-auto">
+                    <span class="label-sm text-secondary">Protección Corporativa</span>
+                    <h1 class="headline-lg mt-sm">Catálogo de Seguros</h1>
+                </div>
+                
+                <div class="grid grid-cols-12 gap-gutter">
+                    <div class="col-span-4 card">
+                        <div>
+                            <span class="material-symbols-outlined card-icon">corporate_fare</span>
+                            <h3 class="headline-md mb-sm">Seguro de Edificios</h3>
+                            <p class="body-md text-on-surface-variant">Cobertura total contra daños estructurales, incendios y desastres naturales para sus activos inmobiliarios.</p>
+                        </div>
+                        <a href="index.html?servicio=seguros#contacto" class="card-link label-md service-select" data-service="seguros">Solicitar <span class="material-symbols-outlined">arrow_forward</span></a>
+                    </div>
+                    <div class="col-span-4 card">
+                        <div>
+                            <span class="material-symbols-outlined card-icon">business_center</span>
+                            <h3 class="headline-md mb-sm">Responsabilidad Civil</h3>
+                            <p class="body-md text-on-surface-variant">Proteja su empresa frente a reclamaciones de terceros derivadas de su actividad profesional.</p>
+                        </div>
+                        <a href="index.html?servicio=seguros#contacto" class="card-link label-md service-select" data-service="seguros">Solicitar <span class="material-symbols-outlined">arrow_forward</span></a>
+                    </div>
+                    <div class="col-span-4 card">
+                        <div>
+                            <span class="material-symbols-outlined card-icon">health_and_safety</span>
+                            <h3 class="headline-md mb-sm">Seguros para Empleados</h3>
+                            <p class="body-md text-on-surface-variant">Planes de salud y accidentes corporativos para garantizar el bienestar de su plantilla.</p>
+                        </div>
+                        <a href="index.html?servicio=seguros#contacto" class="card-link label-md service-select" data-service="seguros">Solicitar <span class="material-symbols-outlined">arrow_forward</span></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container grid grid-cols-12 gap-lg">
+            <div class="col-span-4 flex flex-col gap-sm">
+                <span class="headline-md text-white uppercase">Codecor Rota el Porteño</span>
+                <p class="body-md text-white text-opacity-80 max-w-600">
+                    Solidez y seriedad en gestión corporativa, inmobiliaria y construcción.
+                </p>
+            </div>
+            
+            <div class="col-span-8 flex justify-end items-center gap-lg footer-nav">
+                <a href="privacidad.html" class="body-md text-white">Privacidad</a>
+                <a href="terminos.html" class="body-md text-white">Términos</a>
+                <a href="faq.html" class="body-md text-white">Preguntas Frecuentes</a>
+                <a href="admin.html" class="body-md text-white">Admin</a>
+            </div>
+            
+            <div class="col-span-12 border-t-footer flex justify-between items-center">
+                <p class="body-md text-opacity-80">© 2026 Codecor Rota el Porteño. Todos los derechos reservados.</p>
+                <div class="flex gap-sm">
+                    <span class="material-symbols-outlined cursor-pointer text-opacity-80">language</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

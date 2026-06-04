@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Codecor</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="admin-body">
+
+    <!-- Vista de Login -->
+    <div id="login-view">
+        <div class="card login-card">
+            <a href="index.html" class="back-link">
+                <span class="material-symbols-outlined">arrow_back</span> Volver a la web
+            </a>
+            <h2 class="headline-md text-center mb-lg">Acceso Administrativo</h2>
+            <form id="login-form" onsubmit="event.preventDefault();">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">Correo Electrónico</label>
+                    <input class="form-input" type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Contraseña</label>
+                    <input class="form-input" type="password" id="login-password" required>
+                </div>
+                <div id="login-error" class="body-md text-error mb-sm display-none"></div>
+                <button type="button" id="btn-login-submit" class="btn btn-primary w-full">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Vista Dashboard -->
+    <div id="dashboard-view">
+        <aside class="sidebar">
+            <a href="index.html" class="sidebar-logo headline-md" title="Volver a la página principal">Codecor Admin</a>
+            <nav id="admin-nav">
+                <div class="nav-item active" data-target="panel-inmuebles">
+                    <span class="material-symbols-outlined">real_estate_agent</span> Inmuebles
+                </div>
+                <div class="nav-item" data-target="panel-servicios">
+                    <span class="material-symbols-outlined">design_services</span> Servicios
+                </div>
+                <div class="nav-item" data-target="panel-mensajes">
+                    <span class="material-symbols-outlined">mail</span> Mensajes
+                </div>
+                <div class="nav-item logout-btn" id="btn-logout">
+                    <span class="material-symbols-outlined">logout</span> Cerrar Sesión
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            
+            <!-- Panel Inmuebles -->
+            <div id="panel-inmuebles" class="panel active">
+                <div class="flex justify-between items-center mb-lg">
+                    <h2 class="headline-lg">Gestión de Inmuebles</h2>
+                    <button class="btn btn-primary btn-sm" id="btn-add-inmueble">Añadir Inmueble</button>
+                </div>
+                <table class="admin-table" id="table-inmuebles">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Precio</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dinámico -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Panel Servicios -->
+            <div id="panel-servicios" class="panel">
+                <div class="flex justify-between items-center mb-lg">
+                    <h2 class="headline-lg">Gestión de Servicios</h2>
+                    <button class="btn btn-primary btn-sm" id="btn-add-servicio">Añadir Servicio</button>
+                </div>
+                <table class="admin-table" id="table-servicios">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Icono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dinámico -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Panel Mensajes -->
+            <div id="panel-mensajes" class="panel">
+                <h2 class="headline-lg mb-lg">Mensajes de Contacto</h2>
+                <table class="admin-table" id="table-mensajes">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Servicio</th>
+                            <th>Mensaje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dinámico -->
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modales Formularios (Crear/Editar) -->
+    <!-- Modal Inmueble -->
+    <div id="modal-inmueble" class="modal">
+        <div class="modal-content">
+            <h3 class="headline-md mb-md" id="modal-inmueble-title">Añadir Inmueble</h3>
+            <form id="form-inmueble">
+                <input type="hidden" id="inmueble-id">
+                <div class="form-group">
+                    <label class="form-label" for="inmueble-title">Título</label>
+                    <input class="form-input" type="text" id="inmueble-title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inmueble-desc">Descripción</label>
+                    <textarea class="form-input" id="inmueble-desc" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inmueble-price">Precio (€)</label>
+                    <input class="form-input" type="number" id="inmueble-price" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inmueble-status">Estado</label>
+                    <select class="form-input" id="inmueble-status" required>
+                        <option value="venta">Venta</option>
+                        <option value="alquiler">Alquiler</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="inmueble-img">URL Imagen</label>
+                    <input class="form-input" type="url" id="inmueble-img" required>
+                </div>
+                <div class="flex justify-end gap-sm mt-lg">
+                    <button type="button" class="btn btn-secondary dark" onclick="closeModal('modal-inmueble')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Servicio -->
+    <div id="modal-servicio" class="modal">
+        <div class="modal-content">
+            <h3 class="headline-md mb-md" id="modal-servicio-title">Añadir Servicio</h3>
+            <form id="form-servicio">
+                <input type="hidden" id="servicio-id">
+                <div class="form-group">
+                    <label class="form-label" for="servicio-name">Nombre del Servicio</label>
+                    <input class="form-input" type="text" id="servicio-name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="servicio-icon">Icono (Material Symbols)</label>
+                    <input class="form-input" type="text" id="servicio-icon" required placeholder="ej: home, construction, shield">
+                    <small class="text-on-surface-variant mt-xs display-block">Busca iconos en <a href="https://fonts.google.com/icons" target="_blank" class="text-link">Google Fonts</a></small>
+                </div>
+                <div class="flex justify-end gap-sm mt-lg">
+                    <button type="button" class="btn btn-secondary dark" onclick="closeModal('modal-servicio')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cargar Supabase CDN y scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-client.js?v=2"></script>
+    <script src="assets/js/admin.js?v=2"></script>
+</body>
+</html>

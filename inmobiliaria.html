@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codecor Rota el Porteño - Inmobiliaria</title>
+    <meta name="description" content="Catálogo selecto de propiedades corporativas y residenciales de alto standing.">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="assets/img/logo.png" alt="Logo Codecor Rota el Porteño" class="logo-image">
+                <div class="logo-text-container">
+                    <span class="logo-text-main">Codecor Rota</span>
+                    <span class="logo-text-sub">el Porteño</span>
+                </div>
+            </div>
+            
+            <nav class="nav-desktop">
+                <a class="nav-link" href="index.html#inicio">Inicio</a>
+                <a class="nav-link" href="index.html#nosotros">Quiénes Somos</a>
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle active" href="index.html#servicios">Servicios</a>
+                    <div class="dropdown-menu">
+                        <a href="inmobiliaria.html" class="dropdown-item">Inmobiliaria</a>
+                        <a href="index.html?servicio=inversiones#contacto" class="dropdown-item service-select" data-service="inversiones">Inversiones</a>
+                        <a href="index.html?servicio=construccion#contacto" class="dropdown-item service-select" data-service="construccion">Construcción</a>
+                        <a href="index.html?servicio=mantenimiento#contacto" class="dropdown-item service-select" data-service="mantenimiento">Mantenimiento</a>
+                        <a href="seguros.html" class="dropdown-item">Seguros</a>
+                    </div>
+                </div>
+                <a class="nav-link" href="index.html#contacto">Contacto</a>
+            </nav>
+
+            <div class="nav-desktop">
+                <a href="index.html#contacto" class="btn btn-primary btn-sm">Consultar</a>
+            </div>
+
+            <button class="menu-toggle" id="mobile-menu-btn" aria-label="Abrir menú">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="pt-80">
+        <section id="inmobiliaria" class="section bg-surface-lowest min-h-screen-nav">
+            <div class="container flex flex-col gap-xl">
+                <div class="text-center max-w-600 mx-auto">
+                    <span class="label-sm text-secondary">Catálogo Selecto</span>
+                    <h1 class="headline-lg mt-sm">Propiedades Destacadas</h1>
+                </div>
+                
+                <div class="grid grid-cols-12 gap-gutter" id="properties-grid">
+                    <!-- Properties will be injected here via JS later -->
+                    <div class="col-span-12 text-center py-xl">
+                        <p class="body-md text-on-surface-variant">Cargando propiedades disponibles...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container grid grid-cols-12 gap-lg">
+            <div class="col-span-4 flex flex-col gap-sm">
+                <span class="headline-md text-white uppercase">Codecor Rota el Porteño</span>
+                <p class="body-md text-white text-opacity-80 max-w-600">
+                    Solidez y seriedad en gestión corporativa, inmobiliaria y construcción.
+                </p>
+            </div>
+            
+            <div class="col-span-8 flex justify-end items-center gap-lg footer-nav">
+                <a href="privacidad.html" class="body-md text-white">Privacidad</a>
+                <a href="terminos.html" class="body-md text-white">Términos</a>
+                <a href="faq.html" class="body-md text-white">Preguntas Frecuentes</a>
+                <a href="admin.html" class="body-md text-white">Admin</a>
+            </div>
+            
+            <div class="col-span-12 border-t-footer flex justify-between items-center">
+                <p class="body-md text-opacity-80">© 2026 Codecor Rota el Porteño. Todos los derechos reservados.</p>
+                <div class="flex gap-sm">
+                    <span class="material-symbols-outlined cursor-pointer text-opacity-80">language</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/supabase-client.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

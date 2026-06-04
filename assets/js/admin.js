@@ -299,7 +299,7 @@ const initApp = async () => {
                 const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file);
                 
                 if (uploadError) {
-                    throw new Error("Error al subir imagen. Asegúrate de tener creado un bucket público llamado 'images'.");
+                    throw new Error("Error al subir imagen: " + uploadError.message + ". Revisa las Políticas de Seguridad (RLS) en Supabase.");
                 }
                 
                 const { data } = supabase.storage.from('images').getPublicUrl(filePath);

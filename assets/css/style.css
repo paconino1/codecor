@@ -651,6 +651,9 @@ body.admin-body {
     body.admin-body {
         flex-direction: column;
     }
+    #dashboard-view {
+        flex-direction: column;
+    }
 }
 
 /* --- Login Vista --- */

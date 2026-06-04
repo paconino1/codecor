@@ -175,10 +175,10 @@ ul, ol {
 /* Typography Responsive adjustments */
 @media (max-width: 767px) {
   .headline-xl {
-    font-size: 3.8rem; /* Smaller for mobile to prevent overflow */
+    font-size: 3.2rem; /* Even smaller for mobile to prevent long word overflow */
   }
   .headline-lg {
-    font-size: 2.8rem;
+    font-size: 2.6rem;
   }
   .headline-md {
     font-size: 2.2rem;
@@ -647,6 +647,12 @@ body.admin-body {
     margin: 0;
 }
 
+@media (max-width: 767px) {
+    body.admin-body {
+        flex-direction: column;
+    }
+}
+
 /* --- Login Vista --- */
 #login-view {
     width: 100%;
@@ -685,6 +691,14 @@ body.admin-body {
     display: flex;
     flex-direction: column;
     padding: var(--spacing-lg) 0;
+}
+
+@media (max-width: 767px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: var(--spacing-md) 0;
+    }
 }
 .sidebar-logo {
     padding: 0 var(--spacing-lg);
@@ -734,6 +748,12 @@ body.admin-body {
     border-radius: var(--radius-lg);
     overflow: hidden;
     border: 1px solid var(--color-outline-variant);
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 .admin-table th, .admin-table td {
     padding: var(--spacing-md);

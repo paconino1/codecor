@@ -212,7 +212,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             link.href = linkHref;
             link.className = 'card-link label-md' + (isSelectLink ? ' service-select' : '');
             if (isSelectLink) link.setAttribute('data-service', dataService);
-            link.innerHTML = linkText + ' <span class="material-symbols-outlined">arrow_forward</span>';
+            link.textContent = linkText + ' ';
+            const linkIcon = document.createElement('span');
+            linkIcon.className = 'material-symbols-outlined';
+            linkIcon.textContent = 'arrow_forward';
+            link.appendChild(linkIcon);
             
             // Si es un enlace de contacto, añadir el evento para seleccionar el dropdown
             if (isSelectLink) {

@@ -227,6 +227,8 @@ const initApp = async () => {
     btnAddInmueble.addEventListener('click', () => {
         formInmueble.reset();
         document.getElementById('inmueble-id').value = '';
+        document.getElementById('inmueble-img-url-existing').value = '';
+        document.getElementById('inmueble-error').style.display = 'none';
         document.getElementById('modal-inmueble-title').textContent = 'Añadir Inmueble';
         openModal('modal-inmueble');
     });
@@ -271,36 +273,79 @@ const initApp = async () => {
 
     formInmueble.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const id = document.getElementById('inmueble-id').value;
-        const payload = {
-            title: document.getElementById('inmueble-title').value,
-            description: document.getElementById('inmueble-desc').value,
-            price: document.getElementById('inmueble-price').value,
-            status: document.getElementById('inmueble-status').value,
-            image_url: document.getElementById('inmueble-img').value
-        };
-
-        if (id) {
-            // Update
-            const { error } = await supabase.from('properties').update(payload).eq('id', id);
-            if (error) console.error("Error al actualizar:", error);
-        } else {
-            // Insert
-            const { error } = await supabase.from('properties').insert([payload]);
-            if (error) console.error("Error al insertar:", error);
-        }
         
-        closeModal('modal-inmueble');
-        loadInmuebles();
+        const errorDiv = document.getElementById('inmueble-error');
+        errorDiv.style.display = 'none';
+        
+        const id = document.getElementById('inmueble-id').value;
+        const fileInput = document.getElementById('inmueble-img-file');
+        const existingUrl = document.getElementById('inmueble-img-url-existing').value;
+        
+        let finalImageUrl = existingUrl;
+        
+        // Disable button during upload
+        const submitBtn = formInmueble.querySelector('button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Subiendo...';
+        
+        try {
+            if (fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                const filePath = `inmuebles/${fileName}`;
+                
+                const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file);
+                
+                if (uploadError) {
+                    throw new Error("Error al subir imagen. Asegúrate de tener creado un bucket público llamado 'images'.");
+                }
+                
+                const { data } = supabase.storage.from('images').getPublicUrl(filePath);
+                finalImageUrl = data.publicUrl;
+            } else if (!existingUrl) {
+                throw new Error("Debes seleccionar una imagen para el inmueble.");
+            }
+            
+            const payload = {
+                title: document.getElementById('inmueble-title').value,
+                description: document.getElementById('inmueble-desc').value,
+                price: document.getElementById('inmueble-price').value,
+                status: document.getElementById('inmueble-status').value,
+                image_url: finalImageUrl
+            };
+
+            if (id) {
+                // Update
+                const { error } = await supabase.from('properties').update(payload).eq('id', id);
+                if (error) throw new Error("Error al actualizar el inmueble en la base de datos.");
+            } else {
+                // Insert
+                const { error } = await supabase.from('properties').insert([payload]);
+                if (error) throw new Error("Error al insertar el inmueble en la base de datos.");
+            }
+            
+            closeModal('modal-inmueble');
+            loadInmuebles();
+        } catch (err) {
+            errorDiv.textContent = err.message;
+            errorDiv.style.display = 'block';
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+        }
     });
 
     function editInmueble(item) {
+        formInmueble.reset();
         document.getElementById('inmueble-id').value = item.id;
         document.getElementById('inmueble-title').value = item.title;
         document.getElementById('inmueble-desc').value = item.description;
         document.getElementById('inmueble-price').value = item.price;
         document.getElementById('inmueble-status').value = item.status;
-        document.getElementById('inmueble-img').value = item.image_url;
+        document.getElementById('inmueble-img-url-existing').value = item.image_url;
+        document.getElementById('inmueble-error').style.display = 'none';
         document.getElementById('modal-inmueble-title').textContent = 'Editar Inmueble';
         openModal('modal-inmueble');
     }

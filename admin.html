@@ -128,6 +128,7 @@
         <div class="modal-content">
             <h3 class="headline-md mb-md" id="modal-inmueble-title">Añadir Inmueble</h3>
             <form id="form-inmueble">
+                <div id="inmueble-error" class="body-md text-error mb-sm display-none"></div>
                 <input type="hidden" id="inmueble-id">
                 <div class="form-group">
                     <label class="form-label" for="inmueble-title">Título</label>
@@ -149,8 +150,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="inmueble-img">URL Imagen</label>
-                    <input class="form-input" type="url" id="inmueble-img" required>
+                    <label class="form-label" for="inmueble-img-file">Fotografía (Seleccionar de Galería)</label>
+                    <input class="form-input" type="file" id="inmueble-img-file" accept="image/*">
+                    <small class="text-on-surface-variant mt-xs display-block">Si ya tiene imagen, se mantendrá la actual. Subir una nueva la reemplazará.</small>
+                    <!-- Campo oculto para mantener la URL existente si no se sube nada nuevo -->
+                    <input type="hidden" id="inmueble-img-url-existing">
                 </div>
                 <div class="flex justify-end gap-sm mt-lg">
                     <button type="button" class="btn btn-secondary dark" onclick="closeModal('modal-inmueble')">Cancelar</button>

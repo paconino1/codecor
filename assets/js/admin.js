@@ -471,7 +471,17 @@ const initApp = async () => {
             const tdId = document.createElement('td'); tdId.textContent = shortId;
             const tdDate = document.createElement('td'); tdDate.textContent = dateStr;
             const tdName = document.createElement('td'); tdName.textContent = item.name;
-            const tdPhone = document.createElement('td'); tdPhone.textContent = item.phone || '-';
+            
+            let formattedPhone = item.phone || '-';
+            if (formattedPhone !== '-') {
+                const str = String(formattedPhone);
+                if (str.length === 11 && str.startsWith('34')) {
+                    formattedPhone = `+34 ${str.substring(2,5)} ${str.substring(5,7)} ${str.substring(7,9)} ${str.substring(9,11)}`;
+                } else if (!str.startsWith('+')) {
+                    formattedPhone = '+' + str;
+                }
+            }
+            const tdPhone = document.createElement('td'); tdPhone.textContent = formattedPhone;
             const tdEmail = document.createElement('td'); tdEmail.textContent = item.email || '-';
             const tdService = document.createElement('td'); tdService.textContent = item.service_type;
             const tdMsg = document.createElement('td'); tdMsg.textContent = item.message;
@@ -495,7 +505,14 @@ const initApp = async () => {
                 btnResponder.onclick = (e) => { e.preventDefault(); };
             }
             
+            const btnDelete = document.createElement('button');
+            btnDelete.className = 'btn btn-secondary dark btn-sm';
+            btnDelete.style.marginLeft = '0.5rem';
+            btnDelete.textContent = 'Borrar';
+            btnDelete.onclick = () => deleteMensaje(item.id);
+            
             tdActions.appendChild(btnResponder);
+            tdActions.appendChild(btnDelete);
 
             tr.appendChild(tdId);
             tr.appendChild(tdDate);
@@ -506,6 +523,17 @@ const initApp = async () => {
             tr.appendChild(tdMsg);
             tr.appendChild(tdActions);
             tbodyMensajes.appendChild(tr);
+        });
+    }
+
+    async function deleteMensaje(id) {
+        confirmAction("¿Está seguro de que desea borrar este mensaje?", async () => {
+            const { error } = await supabase.from('messages').delete().eq('id', id);
+            if (error) {
+                console.error("Error al borrar mensaje:", error);
+            } else {
+                loadMensajes();
+            }
         });
     }
 };

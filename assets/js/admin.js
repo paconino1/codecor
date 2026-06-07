@@ -481,15 +481,17 @@ const initApp = async () => {
             btnResponder.className = 'btn btn-primary btn-sm';
             btnResponder.textContent = 'Responder';
             
+            btnResponder.target = '_blank';
+            
             if (item.phone && String(item.phone).trim() !== '') {
                 // Convertir a string y limpiar
                 const cleanPhone = String(item.phone).replace(/[^0-9+]/g, '');
                 btnResponder.href = `https://wa.me/${cleanPhone}`;
-                btnResponder.target = '_blank';
             } else if (item.email && String(item.email).trim() !== '') {
                 btnResponder.href = `mailto:${item.email}`;
             } else {
                 btnResponder.href = '#';
+                btnResponder.target = '';
                 btnResponder.onclick = (e) => { e.preventDefault(); };
             }
             

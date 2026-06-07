@@ -241,7 +241,8 @@ const initApp = async () => {
         data.forEach(item => {
             const tr = document.createElement('tr');
             
-            const tdId = document.createElement('td'); tdId.textContent = item.id;
+            const shortId = item.id.substring(0, 6).toUpperCase();
+            const tdId = document.createElement('td'); tdId.textContent = shortId;
             const tdTitle = document.createElement('td'); tdTitle.textContent = item.title;
             const tdPrice = document.createElement('td'); tdPrice.textContent = `${item.price} €`;
             const tdStatus = document.createElement('td'); tdStatus.textContent = item.status === 'venta' ? 'En Venta' : 'En Alquiler';
@@ -463,9 +464,12 @@ const initApp = async () => {
         data.forEach(item => {
             const tr = document.createElement('tr');
             
-            const date = new Date(item.created_at).toLocaleDateString('es-ES');
+            const shortId = item.id ? item.id.substring(0, 6).toUpperCase() : '-';
+            const d = new Date(item.created_at);
+            const dateStr = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth()+1).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
             
-            const tdDate = document.createElement('td'); tdDate.textContent = date;
+            const tdId = document.createElement('td'); tdId.textContent = shortId;
+            const tdDate = document.createElement('td'); tdDate.textContent = dateStr;
             const tdName = document.createElement('td'); tdName.textContent = item.name;
             const tdPhone = document.createElement('td'); tdPhone.textContent = item.phone || '-';
             const tdEmail = document.createElement('td'); tdEmail.textContent = item.email || '-';
@@ -487,6 +491,7 @@ const initApp = async () => {
             };
             tdActions.appendChild(btnResponder);
 
+            tr.appendChild(tdId);
             tr.appendChild(tdDate);
             tr.appendChild(tdName);
             tr.appendChild(tdPhone);

@@ -477,18 +477,22 @@ const initApp = async () => {
             const tdMsg = document.createElement('td'); tdMsg.textContent = item.message;
 
             const tdActions = document.createElement('td');
-            const btnResponder = document.createElement('button');
+            const btnResponder = document.createElement('a');
             btnResponder.className = 'btn btn-primary btn-sm';
             btnResponder.textContent = 'Responder';
-            btnResponder.onclick = () => {
-                if (item.phone) {
-                    // Limpiar teléfono de espacios o símbolos para WhatsApp
-                    const cleanPhone = item.phone.replace(/[^0-9+]/g, '');
-                    window.open(`https://wa.me/${cleanPhone}`, '_blank');
-                } else if (item.email) {
-                    window.location.href = `mailto:${item.email}`;
-                }
-            };
+            
+            if (item.phone && String(item.phone).trim() !== '') {
+                // Convertir a string y limpiar
+                const cleanPhone = String(item.phone).replace(/[^0-9+]/g, '');
+                btnResponder.href = `https://wa.me/${cleanPhone}`;
+                btnResponder.target = '_blank';
+            } else if (item.email && String(item.email).trim() !== '') {
+                btnResponder.href = `mailto:${item.email}`;
+            } else {
+                btnResponder.href = '#';
+                btnResponder.onclick = (e) => { e.preventDefault(); };
+            }
+            
             tdActions.appendChild(btnResponder);
 
             tr.appendChild(tdId);

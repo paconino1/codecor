@@ -467,15 +467,33 @@ const initApp = async () => {
             
             const tdDate = document.createElement('td'); tdDate.textContent = date;
             const tdName = document.createElement('td'); tdName.textContent = item.name;
-            const tdEmail = document.createElement('td'); tdEmail.textContent = item.email;
+            const tdPhone = document.createElement('td'); tdPhone.textContent = item.phone || '-';
+            const tdEmail = document.createElement('td'); tdEmail.textContent = item.email || '-';
             const tdService = document.createElement('td'); tdService.textContent = item.service_type;
             const tdMsg = document.createElement('td'); tdMsg.textContent = item.message;
 
+            const tdActions = document.createElement('td');
+            const btnResponder = document.createElement('button');
+            btnResponder.className = 'btn btn-primary btn-sm';
+            btnResponder.textContent = 'Responder';
+            btnResponder.onclick = () => {
+                if (item.phone) {
+                    // Limpiar teléfono de espacios o símbolos para WhatsApp
+                    const cleanPhone = item.phone.replace(/[^0-9+]/g, '');
+                    window.open(`https://wa.me/${cleanPhone}`, '_blank');
+                } else if (item.email) {
+                    window.location.href = `mailto:${item.email}`;
+                }
+            };
+            tdActions.appendChild(btnResponder);
+
             tr.appendChild(tdDate);
             tr.appendChild(tdName);
+            tr.appendChild(tdPhone);
             tr.appendChild(tdEmail);
             tr.appendChild(tdService);
             tr.appendChild(tdMsg);
+            tr.appendChild(tdActions);
             tbodyMensajes.appendChild(tr);
         });
     }

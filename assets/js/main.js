@@ -108,9 +108,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Autoselect Service from URL ---
     const urlParams = new URLSearchParams(window.location.search);
     const serviceParam = urlParams.get('servicio');
+    const subtypeParam = urlParams.get('subtipo');
     if (serviceParam && serviceSelectDropdown) {
         serviceSelectDropdown.value = serviceParam;
         handleServiceTypeChange();
+        
+        if (subtypeParam) {
+            if (serviceParam === 'seguros' && segurosSubtypeDropdown) {
+                segurosSubtypeDropdown.value = subtypeParam;
+            } else if (serviceParam === 'mantenimiento' && mantenimientoSubtypeDropdown) {
+                mantenimientoSubtypeDropdown.value = subtypeParam;
+            }
+        }
+    }
+    
+    // --- Autoselect Inmueble de URL ---
+    const inmuebleParam = urlParams.get('inmueble');
+    if (inmuebleParam && serviceSelectDropdown) {
+        serviceSelectDropdown.value = 'inmobiliaria';
+        handleServiceTypeChange();
+        const messageBox = document.getElementById('message');
+        if (messageBox) {
+            messageBox.value = `Hola, estoy interesado en recibir más información sobre la propiedad: ${inmuebleParam}`;
+        }
     }
     
     // --- Inicialización de Supabase ---
@@ -338,9 +358,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             price.className = 'headline-lg text-primary';
             price.textContent = `${prop.price} €`;
 
+            const btnConsultar = document.createElement('a');
+            btnConsultar.href = `index.html?inmueble=${encodeURIComponent(prop.title)}#contacto`;
+            btnConsultar.className = 'btn btn-primary btn-sm mt-md';
+            btnConsultar.textContent = 'Consultar';
+            btnConsultar.style.display = 'inline-block';
+            btnConsultar.style.textAlign = 'center';
+
             contentContainer.appendChild(title);
             contentContainer.appendChild(desc);
             contentContainer.appendChild(price);
+            contentContainer.appendChild(btnConsultar);
 
             card.appendChild(imgContainer);
             card.appendChild(contentContainer);
@@ -387,6 +415,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const payload = {
                 name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
                 email: document.getElementById('email').value,
                 service_type: fullServiceType,
                 message: document.getElementById('message').value

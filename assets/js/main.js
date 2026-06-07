@@ -413,9 +413,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
 
+            const rawPhone = document.getElementById('phone').value;
+            const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+
             const payload = {
                 name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
+                phone: cleanPhone,
                 email: document.getElementById('email').value,
                 service_type: fullServiceType,
                 message: document.getElementById('message').value

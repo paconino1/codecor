@@ -414,7 +414,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             const rawPhone = document.getElementById('phone').value;
-            const cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+            let cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+
+            // Si el cliente introduce su número español sin prefijo (9 dígitos que empiezan por 6, 7, 8 o 9),
+            // se lo añadimos automáticamente para que WhatsApp funcione siempre.
+            if (cleanPhone.length === 9 && /^[6789]/.test(cleanPhone)) {
+                cleanPhone = '34' + cleanPhone;
+            }
 
             const payload = {
                 name: document.getElementById('name').value,

@@ -216,22 +216,59 @@ const initApp = async () => {
     window.closeModal = function(modalId) {
         document.getElementById(modalId).classList.remove('active');
     };
+    
+    // --- INMUEBLES ---
+    const btnImportarInmuebles = document.getElementById('btn-importar-inmuebles');
+    const tbodyInmuebles = document.querySelector('#table-inmuebles tbody');
+
+    if (btnAddInmueble) {
+        btnAddInmueble.addEventListener('click', () => {
+            formInmueble.reset();
+            document.getElementById('inmueble-id').value = '';
+            document.getElementById('inmueble-img-url-existing').value = '';
+            document.getElementById('inmueble-error').style.display = 'none';
+            document.getElementById('modal-inmueble-title').textContent = 'Añadir Inmueble';
+            openModal('modal-inmueble');
+        });
+    }
+
+    if (btnImportarInmuebles) {
+        btnImportarInmuebles.addEventListener('click', async () => {
+            const properties = [
+                { title: "Pisos de Ladrillos", description: "60m² construidos, cómodo y acogedor, excelente ubicación, luminoso.", price: "185.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.57.04.jpeg" },
+                { title: "Finca Rústica", description: "Nave, Invernadero, Casa de 135 m². Espacio, comodidad y naturaleza. Luz, Agua, Agua de riego, Entorno natural.", price: "250.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.19 (1).jpeg" },
+                { title: "Terreno 4,772 metros", description: "Amplio y llano, entorno natural, zona tranquila, ideal para tu proyecto.", price: "70.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.30.jpeg" },
+                { title: "Terreno 980 metros", description: "Terreno con muchas posibilidades.", price: "65.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (1).jpeg" },
+                { title: "Terreno en venta 3,500 m²", description: "Ideal para proyecto residencial, quinta o inversión. Amplio terreno, pozo con agua disponible.", price: "40.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (3).jpeg" },
+                { title: "Terreno en venta 5,000 m²", description: "Tu lugar ideal para construir tus sueños. Amplio terreno rústico en un entorno natural y tranquilo.", price: "55.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (4).jpeg" },
+                { title: "Lote en Venta 8,500 m²", description: "Espacio ideal para construir tus sueños, invertir o disfrutar en familia. Zona tranquila, entorno natural.", price: "90.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (5).jpeg" },
+                { title: "Terreno 3,000 metros frente", description: "Amplio terreno ideal para proyectos residenciales o de inversión. Zona tranquila, entorno natural.", price: "70.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (6).jpeg" },
+                { title: "Terreno 5,000 metros", description: "Invernadero, Agua de riego. Ideal para cultivos y producción.", price: "80.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (7).jpeg" },
+                { title: "Terreno 4,472 metros", description: "Estructura de nave legal. Lista para tu proyecto.", price: "100.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (8).jpeg" },
+                { title: "Terreno 22,495 metros", description: "Amplio y llano, entorno natural, zona tranquila. Agua de riego.", price: "35.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (10).jpeg" },
+                { title: "2 Campos", description: "60 mil metros cuadrados. Negocio o chalet.", price: "400.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31.jpeg" }
+            ];
+            const originalText = btnImportarInmuebles.textContent;
+            btnImportarInmuebles.textContent = 'Importando...';
+            btnImportarInmuebles.disabled = true;
+            try {
+                for(let p of properties) {
+                    await supabase.from('properties').insert([p]);
+                }
+                alert('Inmuebles importados correctamente');
+                loadInmuebles();
+            } catch(e) {
+                alert('Error importando: ' + e.message);
+            } finally {
+                btnImportarInmuebles.textContent = originalText;
+                btnImportarInmuebles.disabled = false;
+            }
+        });
+    }
 
     function openModal(modalId) {
         document.getElementById(modalId).classList.add('active');
     }
-
-    // --- CRUD Inmuebles ---
-    const tbodyInmuebles = document.querySelector('#table-inmuebles tbody');
-
-    btnAddInmueble.addEventListener('click', () => {
-        formInmueble.reset();
-        document.getElementById('inmueble-id').value = '';
-        document.getElementById('inmueble-img-url-existing').value = '';
-        document.getElementById('inmueble-error').style.display = 'none';
-        document.getElementById('modal-inmueble-title').textContent = 'Añadir Inmueble';
-        openModal('modal-inmueble');
-    });
 
     async function loadInmuebles() {
         const { data, error } = await supabase.from('properties').select('*').order('created_at', { ascending: false });

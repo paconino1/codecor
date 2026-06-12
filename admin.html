@@ -54,10 +54,13 @@
             
             <!-- Panel Inmuebles -->
             <div id="panel-inmuebles" class="panel active">
-                <div class="flex flex-wrap justify-between items-center mb-lg gap-sm">
-                    <h2 class="headline-lg">Gestión de Inmuebles</h2>
-                    <button class="btn btn-primary btn-sm" id="btn-add-inmueble">Añadir Inmueble</button>
-                </div>
+                    <div class="flex justify-between items-center mb-md">
+                        <h2 class="headline-md">Inmuebles</h2>
+                        <div class="flex gap-sm">
+                            <button id="btn-importar-inmuebles" class="btn btn-secondary btn-sm">Importar desde Imágenes</button>
+                            <button id="btn-add-inmueble" class="btn btn-primary btn-sm">Añadir Inmueble</button>
+                        </div>
+                    </div>
                 <div class="table-responsive">
                     <table class="admin-table" id="table-inmuebles">
                         <thead>

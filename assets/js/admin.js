@@ -235,18 +235,18 @@ const initApp = async () => {
     if (btnImportarInmuebles) {
         btnImportarInmuebles.addEventListener('click', async () => {
             const properties = [
-                { title: "Pisos de Ladrillos", description: "60m² construidos, cómodo y acogedor, excelente ubicación, luminoso.", price: "185.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.57.04.jpeg" },
-                { title: "Finca Rústica", description: "Nave, Invernadero, Casa de 135 m². Espacio, comodidad y naturaleza. Luz, Agua, Agua de riego, Entorno natural.", price: "250.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.19 (1).jpeg" },
-                { title: "Terreno 4,772 metros", description: "Amplio y llano, entorno natural, zona tranquila, ideal para tu proyecto.", price: "70.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.30.jpeg" },
-                { title: "Terreno 980 metros", description: "Terreno con muchas posibilidades.", price: "65.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (1).jpeg" },
-                { title: "Terreno en venta 3,500 m²", description: "Ideal para proyecto residencial, quinta o inversión. Amplio terreno, pozo con agua disponible.", price: "40.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (3).jpeg" },
-                { title: "Terreno en venta 5,000 m²", description: "Tu lugar ideal para construir tus sueños. Amplio terreno rústico en un entorno natural y tranquilo.", price: "55.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (4).jpeg" },
-                { title: "Lote en Venta 8,500 m²", description: "Espacio ideal para construir tus sueños, invertir o disfrutar en familia. Zona tranquila, entorno natural.", price: "90.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (5).jpeg" },
-                { title: "Terreno 3,000 metros frente", description: "Amplio terreno ideal para proyectos residenciales o de inversión. Zona tranquila, entorno natural.", price: "70.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (6).jpeg" },
-                { title: "Terreno 5,000 metros", description: "Invernadero, Agua de riego. Ideal para cultivos y producción.", price: "80.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (7).jpeg" },
-                { title: "Terreno 4,472 metros", description: "Estructura de nave legal. Lista para tu proyecto.", price: "100.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (8).jpeg" },
-                { title: "Terreno 22,495 metros", description: "Amplio y llano, entorno natural, zona tranquila. Agua de riego.", price: "35.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (10).jpeg" },
-                { title: "2 Campos", description: "60 mil metros cuadrados. Negocio o chalet.", price: "400.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.32 (1).jpeg" }
+                { title: "Pisos de Ladrillos", description: "60m² construidos, cómodo y acogedor, excelente ubicación, luminoso.", price: "185.000€", status: "venta", image_url: "assets/img/pisoLadrillo.jpeg" },
+                { title: "Finca Rústica", description: "Nave, Invernadero, Casa de 135 m². Espacio, comodidad y naturaleza. Luz, Agua, Agua de riego, Entorno natural.", price: "250.000€", status: "venta", image_url: "assets/img/finca.jpeg" },
+                { title: "Terreno 4,772 metros", description: "Amplio y llano, entorno natural, zona tranquila, ideal para tu proyecto.", price: "70.000€", status: "venta", image_url: "assets/img/terreno1.jpeg" },
+                { title: "Terreno 980 metros", description: "Terreno con muchas posibilidades.", price: "65.000€", status: "venta", image_url: "assets/img/terreno2.jpeg" },
+                { title: "Terreno en venta 3,500 m²", description: "Ideal para proyecto residencial, quinta o inversión. Amplio terreno, pozo con agua disponible.", price: "40.000€", status: "venta", image_url: "assets/img/terreno3.jpeg" },
+                { title: "Terreno en venta 5,000 m²", description: "Tu lugar ideal para construir tus sueños. Amplio terreno rústico en un entorno natural y tranquilo.", price: "55.000€", status: "venta", image_url: "assets/img/terreno4.jpeg" },
+                { title: "Lote en Venta 8,500 m²", description: "Espacio ideal para construir tus sueños, invertir o disfrutar en familia. Zona tranquila, entorno natural.", price: "90.000€", status: "venta", image_url: "assets/img/terrenoLote.jpeg" },
+                { title: "Terreno 3,000 metros frente", description: "Amplio terreno ideal para proyectos residenciales o de inversión. Zona tranquila, entorno natural.", price: "70.000€", status: "venta", image_url: "assets/img/terreno5.jpeg" },
+                { title: "Terreno 5,000 metros", description: "Invernadero, Agua de riego. Ideal para cultivos y producción.", price: "80.000€", status: "venta", image_url: "assets/img/terreno6.jpeg" },
+                { title: "Terreno 4,472 metros", description: "Estructura de nave legal. Lista para tu proyecto.", price: "100.000€", status: "venta", image_url: "assets/img/terreno7.jpeg" },
+                { title: "Terreno 22,495 metros", description: "Amplio y llano, entorno natural, zona tranquila. Agua de riego.", price: "35.000€", status: "venta", image_url: "assets/img/terreno8.jpeg" },
+                { title: "2 Campos", description: "60 mil metros cuadrados. Negocio o chalet.", price: "400.000€", status: "venta", image_url: "assets/img/dosCamposLote.jpeg" }
             ];
             const originalText = btnImportarInmuebles.textContent;
             btnImportarInmuebles.textContent = 'Importando...';

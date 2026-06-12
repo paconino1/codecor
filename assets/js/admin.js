@@ -246,7 +246,7 @@ const initApp = async () => {
                 { title: "Terreno 5,000 metros", description: "Invernadero, Agua de riego. Ideal para cultivos y producción.", price: "80.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (7).jpeg" },
                 { title: "Terreno 4,472 metros", description: "Estructura de nave legal. Lista para tu proyecto.", price: "100.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (8).jpeg" },
                 { title: "Terreno 22,495 metros", description: "Amplio y llano, entorno natural, zona tranquila. Agua de riego.", price: "35.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31 (10).jpeg" },
-                { title: "2 Campos", description: "60 mil metros cuadrados. Negocio o chalet.", price: "400.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.31.jpeg" }
+                { title: "2 Campos", description: "60 mil metros cuadrados. Negocio o chalet.", price: "400.000€", status: "venta", image_url: "assets/img/WhatsApp Image 2026-06-07 at 09.56.32 (1).jpeg" }
             ];
             const originalText = btnImportarInmuebles.textContent;
             btnImportarInmuebles.textContent = 'Importando...';

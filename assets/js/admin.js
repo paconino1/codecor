@@ -448,6 +448,56 @@ const initApp = async () => {
         });
     }
 
+    const btnResetServicios = document.getElementById('btn-reset-servicios');
+    if (btnResetServicios) {
+        btnResetServicios.addEventListener('click', () => {
+            confirmAction("¿Estás seguro de que quieres borrar todos los servicios actuales y restablecer los servicios por defecto de Codecor?", async () => {
+                const originalText = btnResetServicios.textContent;
+                btnResetServicios.textContent = 'Restableciendo...';
+                btnResetServicios.disabled = true;
+                
+                try {
+                    // Primero borramos todos
+                    const { data: currentServices } = await supabase.from('services').select('id');
+                    if (currentServices && currentServices.length > 0) {
+                        for (let s of currentServices) {
+                            await supabase.from('services').delete().eq('id', s.id);
+                        }
+                    }
+                    
+                    // Insertamos los correctos
+                    const defaultServices = [
+                        { name: "Inmobiliaria", icon: "real_estate_agent" },
+                        { name: "Construcción", icon: "construction" },
+                        { name: "Inversiones", icon: "trending_up" },
+                        { name: "Seguros", icon: "shield" },
+                        { name: "Mantenimiento General", icon: "handyman" },
+                        { name: "Reformas", icon: "architecture" },
+                        { name: "Fontanería", icon: "plumbing" },
+                        { name: "Electricidad", icon: "electrical_services" },
+                        { name: "Limpieza", icon: "cleaning_services" },
+                        { name: "Jardinería", icon: "yard" },
+                        { name: "Suministros", icon: "inventory_2" },
+                        { name: "Mudanzas", icon: "local_shipping" },
+                        { name: "Pintura", icon: "format_paint" }
+                    ];
+                    
+                    const { error } = await supabase.from('services').insert(defaultServices);
+                    if (error) throw error;
+                    
+                    loadServicios();
+                    alert("Servicios restablecidos correctamente. Puedes cerrar esta alerta.");
+                } catch (error) {
+                    console.error("Error restableciendo servicios", error);
+                    alert("Hubo un error al restablecer los servicios.");
+                } finally {
+                    btnResetServicios.textContent = originalText;
+                    btnResetServicios.disabled = false;
+                }
+            });
+        });
+    }
+
     if (formServicio) {
         formServicio.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -544,12 +594,14 @@ const initApp = async () => {
             
             const btnDelete = document.createElement('button');
             btnDelete.className = 'btn btn-secondary dark btn-sm';
-            btnDelete.style.marginLeft = '0.5rem';
             btnDelete.textContent = 'Borrar';
             btnDelete.onclick = () => deleteMensaje(item.id);
             
-            tdActions.appendChild(btnResponder);
-            tdActions.appendChild(btnDelete);
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'flex gap-sm flex-wrap';
+            actionsDiv.appendChild(btnResponder);
+            actionsDiv.appendChild(btnDelete);
+            tdActions.appendChild(actionsDiv);
 
             tr.appendChild(tdId);
             tr.appendChild(tdDate);

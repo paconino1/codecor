@@ -598,7 +598,7 @@ const initApp = async () => {
             btnDelete.onclick = () => deleteMensaje(item.id);
             
             const actionsDiv = document.createElement('div');
-            actionsDiv.className = 'flex gap-sm flex-wrap';
+            actionsDiv.className = 'flex gap-md flex-wrap';
             actionsDiv.appendChild(btnResponder);
             actionsDiv.appendChild(btnDelete);
             tdActions.appendChild(actionsDiv);

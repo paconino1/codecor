@@ -1,4 +1,4 @@
 ##CORRECCIONES A REALIZAR
-- En la imagen de las personas de "Quiénes somos", se ve las cabezas de ellos un poco cortadas por arriba, prefiero priorizar la cara de ellos a sus piernas.
-- ![alt text]({DD9ADA75-E3B5-41D6-8917-CD199BC94EB7}.png) en esta imagen puedes ver que en la pestaña servicios hay varias cosas que tienen el mismo icono y el nombre de ellos está en minúsculas y es demasiado largo.
-- ![alt text]({C1FC3D14-56FC-4EFB-8538-B305BC47AF5D}.png) y en esta otra imagen se ven los botones "Responder" y "Borrar" que están muy juntos y no se ven bien.
+- En la pestaña servicios has metido todos los servicios de mantenimiento general por separado, prefiero que haya un servicio "Mantenimiento General" y luego que se puedan detallar los servicios específicos que se ofrecen al pinchar sobre Mantenimiento General para dejar más limpia la interfaz del usuario. En mantenimiento general se incluyen los siguientes servicios: Limpieza, Jardinería, Construcción, Fontanería, Electricidad, Pintura, Seguros, Mudanzas y Suministros.
+- El icono este que ves en la imagen ![alt text]({2B03020B-4833-405F-8E0F-A7A48746EE0E}.png) no se ve el icono de la página.
+- Los iconos de las redes sociales no te redirigen a la cuenta oficial de la empresa ![alt text]({455DFBFC-2932-41D5-BE21-010786B70E6D}.png) y el ultimo icono no se para que sirve porque al clicarlo no pasa nada

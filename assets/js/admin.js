@@ -471,15 +471,7 @@ const initApp = async () => {
                         { name: "Construcción", icon: "construction" },
                         { name: "Inversiones", icon: "trending_up" },
                         { name: "Seguros", icon: "shield" },
-                        { name: "Mantenimiento General", icon: "handyman" },
-                        { name: "Reformas", icon: "architecture" },
-                        { name: "Fontanería", icon: "plumbing" },
-                        { name: "Electricidad", icon: "electrical_services" },
-                        { name: "Limpieza", icon: "cleaning_services" },
-                        { name: "Jardinería", icon: "yard" },
-                        { name: "Suministros", icon: "inventory_2" },
-                        { name: "Mudanzas", icon: "local_shipping" },
-                        { name: "Pintura", icon: "format_paint" }
+                        { name: "Mantenimiento General", icon: "handyman" }
                     ];
                     
                     const { error } = await supabase.from('services').insert(defaultServices);

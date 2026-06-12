@@ -171,7 +171,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
-        data.forEach((service, index) => {
+        // Filtramos para asegurar que solo se muestren los 5 principales, en caso de que en BD haya más
+        const mainServicesNames = ['inmobiliaria', 'construcción', 'inversiones', 'seguros', 'mantenimiento general'];
+        const mainServices = data.filter(s => mainServicesNames.includes(s.name.toLowerCase().trim()));
+
+        mainServices.forEach((service, index) => {
             const card = document.createElement('div');
             // Hacer la primera tarjeta más grande (8 columnas) como estaba en el diseño estático si es Inmobiliaria
             if (index === 0 && service.name.toLowerCase().includes('inmobiliaria')) {

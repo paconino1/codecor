@@ -1,4 +1,5 @@
 ##CORRECCIONES A REALIZAR
-- En la pestaña servicios has metido todos los servicios de mantenimiento general por separado, prefiero que haya un servicio "Mantenimiento General" y luego que se puedan detallar los servicios específicos que se ofrecen al pinchar sobre Mantenimiento General para dejar más limpia la interfaz del usuario. En mantenimiento general se incluyen los siguientes servicios: Limpieza, Jardinería, Construcción, Fontanería, Electricidad, Pintura, Seguros, Mudanzas y Suministros.
-- El icono este que ves en la imagen ![alt text]({2B03020B-4833-405F-8E0F-A7A48746EE0E}.png) no se ve el icono de la página.
-- Los iconos de las redes sociales no te redirigen a la cuenta oficial de la empresa ![alt text]({455DFBFC-2932-41D5-BE21-010786B70E6D}.png) y el ultimo icono no se para que sirve porque al clicarlo no pasa nada
+- El numero que aparece en la web como 691 19 74 54 esta mal, es 691 14 74 54
+- El efecto hover de la foto de las personas de la pestañas quienes somos quiero quitarlo porque en movil se ve en blanco y negro hasta que pulsas sobre la imagen y es muy raro. Aunque en pc se ve bien
+- En el catálogo de propiedades, las imágenes que se ven de cada propiedad se ven cortadas, me gustaria que cuadres todas BIEN y asegurate de ello. Ademas quiero un boton para ver todas las fotos de cada propiedad y, por consiguiente, que se pueda meter mas de una foto para la misma propiedad para distintos puntos de vista.
+- En el catalogo de propiedades pones en el precio de cada propiedad dos veces el simbolo euro

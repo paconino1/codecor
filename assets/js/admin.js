@@ -98,7 +98,6 @@ const initApp = async () => {
                 btnLoginSubmit.textContent = 'Iniciar Sesión';
                 btnLoginSubmit.disabled = false;
             } else {
-                // Forzar visualización del dashboard tras login exitoso
                 btnLoginSubmit.textContent = 'Iniciar Sesión';
                 btnLoginSubmit.disabled = false;
                 showDashboard();

@@ -81,6 +81,7 @@
 html {
   font-size: 10px; /* 1rem = 10px */
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
 body {
@@ -317,6 +318,13 @@ ul, ol {
 }
 .card-link:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 767px) {
+  .card {
+    text-align: center;
+    align-items: center;
+  }
 }
 
 /* Forms */

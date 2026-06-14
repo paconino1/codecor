@@ -316,23 +316,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         propertiesData.forEach((prop, index) => {
             const card = document.createElement('div');
-            card.className = 'col-span-4 card';
-            card.style.padding = '0'; // Remover padding del padre para la imagen
-            card.style.overflow = 'hidden';
+            card.className = 'col-span-4 card p-0 overflow-hidden property-card';
+            card.style.padding = '0'; // override default card padding
 
-            const statusBadge = prop.status === 'venta' ? 'En Venta' : 'En Alquiler';
+            // Manejo de múltiples imágenes (separadas por comas)
+            const imageUrls = prop.image_url ? prop.image_url.split(',').map(u => u.trim()) : ['assets/img/hero.jpg'];
+            const mainImageUrl = imageUrls[0];
 
             const imgContainer = document.createElement('div');
+            imgContainer.style.height = '250px'; // Aumentado para mejor encuadre
             imgContainer.style.position = 'relative';
-            imgContainer.style.height = '200px';
 
             const img = document.createElement('img');
-            img.src = prop.image_url;
+            img.src = mainImageUrl;
             img.alt = prop.title;
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'cover';
+            img.style.objectPosition = 'center'; // Asegura centrado
 
+            const statusBadge = prop.status.toLowerCase() === 'venta' ? 'En Venta' : 'En Alquiler';
             const badge = document.createElement('span');
             badge.className = 'badge';
             badge.style.position = 'absolute';
@@ -360,19 +363,38 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const price = document.createElement('h4');
             price.className = 'headline-lg text-primary';
-            price.textContent = `${prop.price} €`;
+            const priceStr = String(prop.price).trim();
+            price.textContent = priceStr.endsWith('€') ? priceStr : `${priceStr} €`;
+
+            const btnContainer = document.createElement('div');
+            btnContainer.style.display = 'flex';
+            btnContainer.style.gap = 'var(--spacing-sm)';
+            btnContainer.style.marginTop = 'var(--spacing-md)';
+            btnContainer.style.flexWrap = 'wrap';
 
             const btnConsultar = document.createElement('a');
             btnConsultar.href = `index.html?inmueble=${encodeURIComponent(prop.title)}#contacto`;
-            btnConsultar.className = 'btn btn-primary btn-sm mt-md';
+            btnConsultar.className = 'btn btn-primary btn-sm';
             btnConsultar.textContent = 'Consultar';
-            btnConsultar.style.display = 'inline-block';
             btnConsultar.style.textAlign = 'center';
+            btnConsultar.style.flex = '1';
+            
+            btnContainer.appendChild(btnConsultar);
+
+            if (imageUrls.length > 0) {
+                const btnFotos = document.createElement('button');
+                btnFotos.className = 'btn btn-secondary btn-sm dark';
+                btnFotos.textContent = 'Ver fotos';
+                btnFotos.style.textAlign = 'center';
+                btnFotos.style.flex = '1';
+                btnFotos.onclick = () => openGalleryModal(prop.title, imageUrls);
+                btnContainer.appendChild(btnFotos);
+            }
 
             contentContainer.appendChild(title);
             contentContainer.appendChild(desc);
             contentContainer.appendChild(price);
-            contentContainer.appendChild(btnConsultar);
+            contentContainer.appendChild(btnContainer);
 
             card.appendChild(imgContainer);
             card.appendChild(contentContainer);
@@ -495,5 +517,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     // Init initial elements
     initObserver();
+
+    // Galería Modal
+    window.openGalleryModal = function(title, imageUrls) {
+        let modal = document.getElementById('modal-galeria');
+        if (!modal) return; // Se asume que el modal existe en el HTML
+        
+        document.getElementById('modal-galeria-title').textContent = title;
+        const grid = document.getElementById('modal-galeria-grid');
+        grid.innerHTML = ''; // Limpiar galería previa
+        
+        imageUrls.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url.trim();
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.style.borderRadius = 'var(--radius-md)';
+            img.style.marginBottom = 'var(--spacing-md)';
+            grid.appendChild(img);
+        });
+        
+        modal.classList.add('active');
+    };
+
+    window.closeGalleryModal = function() {
+        const modal = document.getElementById('modal-galeria');
+        if (modal) modal.classList.remove('active');
+    };
 
 });

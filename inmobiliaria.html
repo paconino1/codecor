@@ -96,6 +96,19 @@
         </div>
     </footer>
 
+    <!-- Modal Galería -->
+    <div id="modal-galeria" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="flex justify-between items-center mb-md">
+                <h3 class="headline-md" id="modal-galeria-title">Fotos</h3>
+                <button class="btn btn-secondary dark" onclick="closeGalleryModal()">Cerrar</button>
+            </div>
+            <div id="modal-galeria-grid" class="flex flex-col gap-sm" style="max-height: 70vh; overflow-y: auto;">
+                <!-- Imágenes inyectadas vía JS -->
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="assets/js/supabase-client.js"></script>
     <script src="assets/js/main.js"></script>

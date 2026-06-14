@@ -328,19 +328,23 @@ const initApp = async () => {
         
         try {
             if (fileInput.files && fileInput.files.length > 0) {
-                const file = fileInput.files[0];
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
-                const filePath = `inmuebles/${fileName}`;
-                
-                const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file);
-                
-                if (uploadError) {
-                    throw new Error("Error al subir imagen: " + uploadError.message + ". Revisa las Políticas de Seguridad (RLS) en Supabase.");
+                let uploadedUrls = [];
+                for (let i = 0; i < fileInput.files.length; i++) {
+                    const file = fileInput.files[i];
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                    const filePath = `inmuebles/${fileName}`;
+                    
+                    const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file);
+                    
+                    if (uploadError) {
+                        throw new Error("Error al subir imagen: " + uploadError.message + ". Revisa las Políticas de Seguridad (RLS) en Supabase.");
+                    }
+                    
+                    const { data } = supabase.storage.from('images').getPublicUrl(filePath);
+                    uploadedUrls.push(data.publicUrl);
                 }
-                
-                const { data } = supabase.storage.from('images').getPublicUrl(filePath);
-                finalImageUrl = data.publicUrl;
+                finalImageUrl = uploadedUrls.join(',');
             } else if (!existingUrl) {
                 throw new Error("Debes seleccionar una imagen para el inmueble.");
             }

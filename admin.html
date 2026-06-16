@@ -26,7 +26,7 @@
                     <input class="form-input" type="password" id="login-password" required>
                 </div>
                 <div id="login-error" class="body-md text-error mb-sm display-none"></div>
-                <button type="button" id="btn-login-submit" class="btn btn-primary w-full">Iniciar Sesión</button>
+                <button type="submit" id="btn-login-submit" class="btn btn-primary w-full">Iniciar Sesión</button>
             </form>
         </div>
     </div>
@@ -58,6 +58,7 @@
                     <div class="flex justify-between items-center mb-md">
                         <h2 class="headline-md">Inmuebles</h2>
                         <div class="flex gap-sm">
+                            <input type="file" id="bulk-import-input" multiple accept="image/*" style="display: none;">
                             <button id="btn-importar-inmuebles" class="btn btn-secondary dark btn-sm">Importar desde Imágenes</button>
                             <button id="btn-add-inmueble" class="btn btn-primary btn-sm">Añadir Inmueble</button>
                         </div>

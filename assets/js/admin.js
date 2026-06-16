@@ -19,6 +19,38 @@ const initApp = async () => {
         return;
     }
 
+    // --- Utilidades DOM ---
+    function showToast(message, isError = false) {
+        const toast = document.createElement('div');
+        toast.className = `body-md px-lg py-md text-white`;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.right = '20px';
+        toast.style.backgroundColor = isError ? 'var(--color-error)' : 'var(--color-secondary)';
+        toast.style.borderRadius = 'var(--radius-md)';
+        toast.style.boxShadow = 'var(--elevation-3)';
+        toast.style.zIndex = '9999';
+        toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        toast.style.transform = 'translateY(100px)';
+        toast.style.opacity = '0';
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        // Animar entrada
+        requestAnimationFrame(() => {
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
+        });
+        
+        // Quitar despues de 3.5s
+        setTimeout(() => {
+            toast.style.transform = 'translateY(100px)';
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
+
     // --- Referencias al DOM ---
     const loginView = document.getElementById('login-view');
     const dashboardView = document.getElementById('dashboard-view');
@@ -67,11 +99,9 @@ const initApp = async () => {
 
     // Handle Login Submit
     const btnLoginSubmit = document.getElementById('btn-login-submit');
-    if (btnLoginSubmit) {
-        btnLoginSubmit.addEventListener('click', async (e) => {
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // Validar campos manualmente al no usar submit
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             
@@ -231,36 +261,59 @@ const initApp = async () => {
         });
     }
 
-    if (btnImportarInmuebles) {
-        btnImportarInmuebles.addEventListener('click', async () => {
-            const properties = [
-                { title: "Pisos de Ladrillos", description: "60m² construidos, cómodo y acogedor, excelente ubicación, luminoso.", price: "185.000€", status: "venta", image_url: "assets/img/pisoLadrillo.jpeg" },
-                { title: "Finca Rústica", description: "Nave, Invernadero, Casa de 135 m². Espacio, comodidad y naturaleza. Luz, Agua, Agua de riego, Entorno natural.", price: "250.000€", status: "venta", image_url: "assets/img/finca.jpeg" },
-                { title: "Terreno 4,772 metros", description: "Amplio y llano, entorno natural, zona tranquila, ideal para tu proyecto.", price: "70.000€", status: "venta", image_url: "assets/img/terreno1.jpeg" },
-                { title: "Terreno 980 metros", description: "Terreno con muchas posibilidades.", price: "65.000€", status: "venta", image_url: "assets/img/terreno2.jpeg" },
-                { title: "Terreno en venta 3,500 m²", description: "Ideal para proyecto residencial, quinta o inversión. Amplio terreno, pozo con agua disponible.", price: "40.000€", status: "venta", image_url: "assets/img/terreno3.jpeg" },
-                { title: "Terreno en venta 5,000 m²", description: "Tu lugar ideal para construir tus sueños. Amplio terreno rústico en un entorno natural y tranquilo.", price: "55.000€", status: "venta", image_url: "assets/img/terreno4.jpeg" },
-                { title: "Lote en Venta 8,500 m²", description: "Espacio ideal para construir tus sueños, invertir o disfrutar en familia. Zona tranquila, entorno natural.", price: "90.000€", status: "venta", image_url: "assets/img/terrenoLote.jpeg" },
-                { title: "Terreno 3,000 metros frente", description: "Amplio terreno ideal para proyectos residenciales o de inversión. Zona tranquila, entorno natural.", price: "70.000€", status: "venta", image_url: "assets/img/terreno5.jpeg" },
-                { title: "Terreno 5,000 metros", description: "Invernadero, Agua de riego. Ideal para cultivos y producción.", price: "80.000€", status: "venta", image_url: "assets/img/terreno6.jpeg" },
-                { title: "Terreno 4,472 metros", description: "Estructura de nave legal. Lista para tu proyecto.", price: "100.000€", status: "venta", image_url: "assets/img/terreno7.jpeg" },
-                { title: "Terreno 22,495 metros", description: "Amplio y llano, entorno natural, zona tranquila. Agua de riego.", price: "35.000€", status: "venta", image_url: "assets/img/terreno8.jpeg" },
-                { title: "2 Campos", description: "60 mil metros cuadrados. Negocio o chalet.", price: "400.000€", status: "venta", image_url: "assets/img/dosCamposLote.jpeg" }
-            ];
+    const bulkImportInput = document.getElementById('bulk-import-input');
+    if (btnImportarInmuebles && bulkImportInput) {
+        btnImportarInmuebles.addEventListener('click', () => {
+            bulkImportInput.click();
+        });
+
+        bulkImportInput.addEventListener('change', async (e) => {
+            const files = e.target.files;
+            if (!files || files.length === 0) return;
+
             const originalText = btnImportarInmuebles.textContent;
-            btnImportarInmuebles.textContent = 'Importando...';
+            btnImportarInmuebles.textContent = `Importando ${files.length} fotos...`;
             btnImportarInmuebles.disabled = true;
+
             try {
-                for(let p of properties) {
-                    await supabase.from('properties').insert([p]);
+                let successCount = 0;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                    const filePath = `inmuebles/${fileName}`;
+
+                    // Subir a Storage
+                    const { error: uploadError } = await supabase.storage.from('images').upload(filePath, file);
+                    if (uploadError) {
+                        console.error("Error subiendo", file.name, uploadError);
+                        continue;
+                    }
+
+                    const { data } = supabase.storage.from('images').getPublicUrl(filePath);
+                    
+                    // Crear propiedad
+                    const title = file.name.replace(/\.[^/.]+$/, "").replace(/_/g, ' '); // Elimina extension y recorta
+                    const payload = {
+                        title: title.charAt(0).toUpperCase() + title.slice(1),
+                        description: 'Añade una descripción para esta propiedad.',
+                        price: '0',
+                        status: 'venta',
+                        image_url: data.publicUrl
+                    };
+                    
+                    const { error: insertError } = await supabase.from('properties').insert([payload]);
+                    if (!insertError) successCount++;
                 }
-                alert('Inmuebles importados correctamente');
+                
+                showToast(`Se han importado ${successCount} inmuebles correctamente.`);
                 loadInmuebles();
-            } catch(e) {
-                alert('Error importando: ' + e.message);
+            } catch(err) {
+                showToast('Error importando: ' + err.message, true);
             } finally {
                 btnImportarInmuebles.textContent = originalText;
                 btnImportarInmuebles.disabled = false;
+                bulkImportInput.value = ''; // Reset input
             }
         });
     }
@@ -481,10 +534,10 @@ const initApp = async () => {
                     if (error) throw error;
                     
                     loadServicios();
-                    alert("Servicios restablecidos correctamente. Puedes cerrar esta alerta.");
+                    showToast("Servicios restablecidos correctamente.");
                 } catch (error) {
                     console.error("Error restableciendo servicios", error);
-                    alert("Hubo un error al restablecer los servicios.");
+                    showToast("Hubo un error al restablecer los servicios.", true);
                 } finally {
                     btnResetServicios.textContent = originalText;
                     btnResetServicios.disabled = false;

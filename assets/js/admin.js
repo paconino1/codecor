@@ -139,21 +139,7 @@ const initApp = async () => {
             btnLoginSubmit.disabled = false;
         }
     });
-    
-    // Permitir enviar con la tecla Enter
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                btnLoginSubmit.click();
-            }
-        });
     }
-
-    }
-
-
     // Handle Logout
     btnLogout.addEventListener('click', async () => {
         await supabase.auth.signOut();

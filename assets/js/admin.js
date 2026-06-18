@@ -71,6 +71,63 @@ const initApp = async () => {
     const formServicio = document.getElementById('form-servicio');
     const btnAddServicio = document.getElementById('btn-add-servicio');
 
+    // Handle Login Submit
+    const btnLoginSubmit = document.getElementById('btn-login-submit');
+    if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                loginError.textContent = 'Por favor, rellena ambos campos.';
+                loginError.style.display = 'block';
+                return;
+            }
+            
+            loginError.style.display = 'none';
+            if (btnLoginSubmit) btnLoginSubmit.disabled = true;
+        
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) {
+                    loginError.textContent = error.message === 'Email not confirmed' 
+                        ? 'Debes confirmar tu correo electrónico. Revisa tu bandeja de entrada.' 
+                        : `Error: ${error.message}`;
+                    loginError.style.display = 'block';
+                    if (btnLoginSubmit) {
+                        btnLoginSubmit.textContent = 'Iniciar Sesión';
+                        btnLoginSubmit.disabled = false;
+                    }
+                } else {
+                    if (btnLoginSubmit) {
+                        btnLoginSubmit.textContent = 'Iniciar Sesión';
+                        btnLoginSubmit.disabled = false;
+                    }
+                    showDashboard();
+                }
+            } catch (err) {
+                loginError.textContent = 'Error inesperado al intentar iniciar sesión.';
+                loginError.style.display = 'block';
+                if (btnLoginSubmit) {
+                    btnLoginSubmit.textContent = 'Iniciar Sesión';
+                    btnLoginSubmit.disabled = false;
+                }
+            }
+        });
+    }
+
+    // Handle Logout
+    if (btnLogout) {
+        btnLogout.addEventListener('click', async () => {
+            await supabase.auth.signOut();
+        });
+    }
+
     // --- Autenticación ---
 
     // Comprobar estado de sesión
@@ -95,54 +152,6 @@ const initApp = async () => {
         } else if (event === 'SIGNED_OUT') {
             showLogin();
         }
-    });
-
-    // Handle Login Submit
-    const btnLoginSubmit = document.getElementById('btn-login-submit');
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            if (!email || !password) {
-                loginError.textContent = 'Por favor, rellena ambos campos.';
-                loginError.style.display = 'block';
-                return;
-            }
-            
-            loginError.style.display = 'none';
-            btnLoginSubmit.disabled = true;
-        
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-
-            if (error) {
-                loginError.textContent = error.message === 'Email not confirmed' 
-                    ? 'Debes confirmar tu correo electrónico. Revisa tu bandeja de entrada.' 
-                    : `Error: ${error.message}`;
-                loginError.style.display = 'block';
-                btnLoginSubmit.textContent = 'Iniciar Sesión';
-                btnLoginSubmit.disabled = false;
-            } else {
-                btnLoginSubmit.textContent = 'Iniciar Sesión';
-                btnLoginSubmit.disabled = false;
-                showDashboard();
-            }
-        } catch (err) {
-            loginError.textContent = 'Error inesperado al intentar iniciar sesión.';
-            loginError.style.display = 'block';
-            btnLoginSubmit.textContent = 'Iniciar Sesión';
-            btnLoginSubmit.disabled = false;
-        }
-    });
-    }
-    // Handle Logout
-    btnLogout.addEventListener('click', async () => {
-        await supabase.auth.signOut();
     });
 
     // --- Navegación del Dashboard ---

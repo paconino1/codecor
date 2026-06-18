@@ -518,31 +518,117 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Init initial elements
     initObserver();
 
-    // Galería Modal
+    // Galería Modal y Slider
+    let currentGalleryUrls = [];
+    let currentSlideIndex = 0;
+
     window.openGalleryModal = function(title, imageUrls) {
         let modal = document.getElementById('modal-galeria');
-        if (!modal) return; // Se asume que el modal existe en el HTML
+        if (!modal) return;
         
         document.getElementById('modal-galeria-title').textContent = title;
-        const grid = document.getElementById('modal-galeria-grid');
-        grid.innerHTML = ''; // Limpiar galería previa
+        currentGalleryUrls = imageUrls.map(url => url.trim());
+        currentSlideIndex = 0;
         
-        imageUrls.forEach(url => {
-            const img = document.createElement('img');
-            img.src = url.trim();
-            img.style.width = '100%';
-            img.style.height = 'auto';
-            img.style.borderRadius = 'var(--radius-md)';
-            img.style.marginBottom = 'var(--spacing-md)';
-            grid.appendChild(img);
-        });
+        renderThumbnails();
+        loadGallerySlide(currentSlideIndex);
         
         modal.classList.add('active');
+    };
+
+    function renderThumbnails() {
+        const thumbContainer = document.getElementById('gallery-thumbnails');
+        if (!thumbContainer) return;
+        thumbContainer.innerHTML = '';
+        
+        currentGalleryUrls.forEach((url, index) => {
+            let thumbEl;
+            if (url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm')) {
+                // Para videos, mostramos un indicador cuadrado oscuro con el icono de play
+                thumbEl = document.createElement('div');
+                thumbEl.className = 'video-thumb-indicator';
+                const icon = document.createElement('span');
+                icon.className = 'material-symbols-outlined';
+                icon.textContent = 'play_circle';
+                thumbEl.appendChild(icon);
+            } else {
+                thumbEl = document.createElement('img');
+                thumbEl.src = url;
+                thumbEl.className = 'gallery-thumb';
+            }
+            
+            thumbEl.onclick = () => loadGallerySlide(index);
+            thumbContainer.appendChild(thumbEl);
+        });
+    }
+
+    function loadGallerySlide(index) {
+        if (index < 0 || index >= currentGalleryUrls.length) return;
+        currentSlideIndex = index;
+        
+        const mainView = document.getElementById('gallery-main-view');
+        if (!mainView) return;
+        
+        // Remove current media (keeping buttons)
+        const currentMedia = mainView.querySelector('.media-element');
+        if (currentMedia) currentMedia.remove();
+        
+        const url = currentGalleryUrls[index];
+        let mediaEl;
+        
+        if (url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm')) {
+            mediaEl = document.createElement('video');
+            mediaEl.src = url;
+            mediaEl.controls = true;
+            mediaEl.autoplay = true;
+        } else {
+            mediaEl = document.createElement('img');
+            mediaEl.src = url;
+        }
+        
+        mediaEl.className = 'media-element fade-in-up';
+        mediaEl.style.animationDelay = '0s'; // fast appear
+        // Insert before the buttons
+        const prevBtn = mainView.querySelector('.prev');
+        mainView.insertBefore(mediaEl, prevBtn);
+        
+        // Update thumbnails active state
+        const thumbContainer = document.getElementById('gallery-thumbnails');
+        if (thumbContainer) {
+            Array.from(thumbContainer.children).forEach((thumb, i) => {
+                if (i === index) thumb.classList.add('active');
+                else thumb.classList.remove('active');
+            });
+            // Auto scroll to active thumbnail
+            const activeThumb = thumbContainer.children[index];
+            if (activeThumb) {
+                activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        }
+    }
+
+    window.nextGallerySlide = function() {
+        let newIndex = currentSlideIndex + 1;
+        if (newIndex >= currentGalleryUrls.length) newIndex = 0; // Loop
+        loadGallerySlide(newIndex);
+    };
+
+    window.prevGallerySlide = function() {
+        let newIndex = currentSlideIndex - 1;
+        if (newIndex < 0) newIndex = currentGalleryUrls.length - 1; // Loop
+        loadGallerySlide(newIndex);
     };
 
     window.closeGalleryModal = function() {
         const modal = document.getElementById('modal-galeria');
         if (modal) modal.classList.remove('active');
+        
+        // Stop video if playing
+        const mainView = document.getElementById('gallery-main-view');
+        if (mainView) {
+            const video = mainView.querySelector('video');
+            if (video) video.pause();
+        }
     };
 
 });

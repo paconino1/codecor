@@ -383,7 +383,15 @@ const initApp = async () => {
                     const { data } = supabase.storage.from('images').getPublicUrl(filePath);
                     uploadedUrls.push(data.publicUrl);
                 }
-                finalImageUrl = uploadedUrls.join(',');
+                
+                if (existingUrl) {
+                    // Evitar duplicados (por si acaso) o comas extra
+                    const cleanExisting = existingUrl.replace(/^,+|,+$/g, '');
+                    finalImageUrl = cleanExisting + ',' + uploadedUrls.join(',');
+                } else {
+                    finalImageUrl = uploadedUrls.join(',');
+                }
+                
             } else if (!existingUrl) {
                 throw new Error("Debes seleccionar un archivo (imagen o vídeo) para el inmueble.");
             }

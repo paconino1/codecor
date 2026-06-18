@@ -347,6 +347,8 @@ const initApp = async () => {
             
             tbodyInmuebles.appendChild(tr);
         });
+    }
+
     let existingGallery = [];
 
     function renderExistingGallery() {

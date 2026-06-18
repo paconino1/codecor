@@ -586,7 +586,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             mediaEl.src = url;
         }
         
-        mediaEl.className = 'media-element fade-in-up';
+        mediaEl.className = 'media-element';
         mediaEl.style.animationDelay = '0s'; // fast appear
         // Insert before the buttons
         const prevBtn = mainView.querySelector('.prev');

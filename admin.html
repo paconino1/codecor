@@ -165,7 +165,10 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="inmueble-img-file">Fotografía (Seleccionar de Galería)</label>
+                    <label class="form-label display-block mb-sm">Galería Existente (Clic en X para eliminar)</label>
+                    <div id="existing-gallery-list" class="flex flex-wrap gap-xs mb-md"></div>
+                    
+                    <label class="form-label" for="inmueble-img-file">Añadir nuevos archivos</label>
                     <input class="form-input" type="file" id="inmueble-img-file" accept="image/*,video/mp4,video/webm" multiple>
                     <div id="file-queue" class="mt-sm flex flex-col gap-xs"></div>
                     <small class="text-on-surface-variant mt-xs display-block">Los archivos nuevos se añadirán a la galería actual.</small>

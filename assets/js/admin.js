@@ -244,6 +244,7 @@ const initApp = async () => {
             document.getElementById('inmueble-error').style.display = 'none';
             document.getElementById('modal-inmueble-title').textContent = 'Añadir Inmueble';
             if (typeof pendingFiles !== 'undefined') { pendingFiles = []; renderQueue(); }
+            if (typeof existingGallery !== 'undefined') { existingGallery = []; renderExistingGallery(); }
             openModal('modal-inmueble');
         });
     }
@@ -345,6 +346,59 @@ const initApp = async () => {
             tr.appendChild(tdActions);
             
             tbodyInmuebles.appendChild(tr);
+        });
+    let existingGallery = [];
+
+    function renderExistingGallery() {
+        const container = document.getElementById('existing-gallery-list');
+        if (!container) return;
+        container.innerHTML = '';
+        existingGallery.forEach((url, index) => {
+            if (!url) return;
+            const wrap = document.createElement('div');
+            wrap.style.position = 'relative';
+            wrap.style.display = 'inline-block';
+            
+            let mediaEl;
+            if (url.toLowerCase().endsWith('.mp4') || url.toLowerCase().endsWith('.webm')) {
+                mediaEl = document.createElement('video');
+                mediaEl.src = url;
+            } else {
+                mediaEl = document.createElement('img');
+                mediaEl.src = url;
+            }
+            mediaEl.style.width = '80px';
+            mediaEl.style.height = '60px';
+            mediaEl.style.objectFit = 'cover';
+            mediaEl.style.borderRadius = 'var(--radius-sm)';
+            
+            const btnRemove = document.createElement('button');
+            btnRemove.type = 'button';
+            btnRemove.innerHTML = '&times;';
+            btnRemove.style.position = 'absolute';
+            btnRemove.style.top = '-5px';
+            btnRemove.style.right = '-5px';
+            btnRemove.style.background = 'var(--color-error)';
+            btnRemove.style.color = 'white';
+            btnRemove.style.border = 'none';
+            btnRemove.style.borderRadius = '50%';
+            btnRemove.style.width = '20px';
+            btnRemove.style.height = '20px';
+            btnRemove.style.cursor = 'pointer';
+            btnRemove.style.display = 'flex';
+            btnRemove.style.justifyContent = 'center';
+            btnRemove.style.alignItems = 'center';
+            btnRemove.style.fontSize = '14px';
+            
+            btnRemove.onclick = () => {
+                existingGallery.splice(index, 1);
+                document.getElementById('inmueble-img-url-existing').value = existingGallery.join(',');
+                renderExistingGallery();
+            };
+            
+            wrap.appendChild(mediaEl);
+            wrap.appendChild(btnRemove);
+            container.appendChild(wrap);
         });
     }
 
@@ -471,6 +525,10 @@ const initApp = async () => {
         document.getElementById('inmueble-error').style.display = 'none';
         document.getElementById('modal-inmueble-title').textContent = 'Editar Inmueble';
         if (typeof pendingFiles !== 'undefined') { pendingFiles = []; renderQueue(); }
+        if (typeof existingGallery !== 'undefined') { 
+            existingGallery = item.image_url ? item.image_url.split(',').filter(u => u.trim() !== '') : []; 
+            renderExistingGallery(); 
+        }
         openModal('modal-inmueble');
     }
 

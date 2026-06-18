@@ -243,6 +243,7 @@ const initApp = async () => {
             document.getElementById('inmueble-img-url-existing').value = '';
             document.getElementById('inmueble-error').style.display = 'none';
             document.getElementById('modal-inmueble-title').textContent = 'Añadir Inmueble';
+            if (typeof pendingFiles !== 'undefined') { pendingFiles = []; renderQueue(); }
             openModal('modal-inmueble');
         });
     }
@@ -347,6 +348,41 @@ const initApp = async () => {
         });
     }
 
+    let pendingFiles = [];
+    const fileQueue = document.getElementById('file-queue');
+    const fileInput = document.getElementById('inmueble-img-file');
+
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            if (!e.target.files) return;
+            for (let i = 0; i < e.target.files.length; i++) {
+                pendingFiles.push(e.target.files[i]);
+            }
+            renderQueue();
+            fileInput.value = ''; // Reset for consecutive selections
+        });
+    }
+
+    function renderQueue() {
+        if (!fileQueue) return;
+        fileQueue.innerHTML = '';
+        pendingFiles.forEach((f, index) => {
+            const div = document.createElement('div');
+            div.className = 'flex justify-between items-center p-xs mt-xs';
+            div.style.backgroundColor = 'var(--color-surface)';
+            div.style.border = '1px solid var(--color-surface-variant)';
+            div.style.borderRadius = 'var(--radius-sm)';
+            div.innerHTML = `<span class="body-sm truncate" style="max-width:80%;">${f.name}</span>
+                             <button type="button" class="btn btn-secondary dark" style="padding: 2px 8px; font-size: 12px; height: auto; min-height: 24px;" onclick="removePendingFile(${index})">X</button>`;
+            fileQueue.appendChild(div);
+        });
+    }
+
+    window.removePendingFile = function(index) {
+        pendingFiles.splice(index, 1);
+        renderQueue();
+    };
+
     formInmueble.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -354,7 +390,6 @@ const initApp = async () => {
         errorDiv.style.display = 'none';
         
         const id = document.getElementById('inmueble-id').value;
-        const fileInput = document.getElementById('inmueble-img-file');
         const existingUrl = document.getElementById('inmueble-img-url-existing').value;
         
         let finalImageUrl = existingUrl;
@@ -366,10 +401,10 @@ const initApp = async () => {
         submitBtn.textContent = 'Subiendo...';
         
         try {
-            if (fileInput.files && fileInput.files.length > 0) {
+            if (pendingFiles.length > 0) {
                 let uploadedUrls = [];
-                for (let i = 0; i < fileInput.files.length; i++) {
-                    const file = fileInput.files[i];
+                for (let i = 0; i < pendingFiles.length; i++) {
+                    const file = pendingFiles[i];
                     const fileExt = file.name.split('.').pop();
                     const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
                     const filePath = `inmuebles/${fileName}`;
@@ -435,6 +470,7 @@ const initApp = async () => {
         document.getElementById('inmueble-img-url-existing').value = item.image_url;
         document.getElementById('inmueble-error').style.display = 'none';
         document.getElementById('modal-inmueble-title').textContent = 'Editar Inmueble';
+        if (typeof pendingFiles !== 'undefined') { pendingFiles = []; renderQueue(); }
         openModal('modal-inmueble');
     }
 

@@ -1,2 +1,4 @@
 ##CORRECCIONES A REALIZAR
-- 
+- [x] Hay que cambiar el numero al que te redirige de whatsapp con el botón por este +34 722 84 91 91
+- [x] La direccion de la empresa es esta Calle Rubén Darío Portal 18 Piso 4ºA 11520 Rota, Cádiz
+- [x] El texto del quiénes somos te lo inventaste y te voy a dar ciertos datos para modicarlo: la empresa se legalizó en 2006 y la fundó Tomás "El Porteño", se fueron expandiendo a otras provincias como Salamanca, Sevilla, Madrid y Jerez de la Frontera, en 2009 la empresa pegó un bajón (este dato no quiero que lo plasmes muy directamente para no dar la impresión de que es una mala empresa) y poco a poco se ha ido recuperando y a día de hoy están recibiendo más trabajo y va mejor. Modifica el texto con estos datos para que quede increible.

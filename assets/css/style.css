@@ -847,6 +847,15 @@ body.admin-body {
 }
 
 /* WhatsApp Floating Button */
+.about-hero-img {
+  border-radius: 12px;
+  box-shadow: var(--elevation-2);
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  object-position: center top;
+}
+
 .whatsapp-float {
   position: fixed;
   width: 60px;

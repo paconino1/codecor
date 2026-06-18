@@ -385,7 +385,7 @@ const initApp = async () => {
                 }
                 finalImageUrl = uploadedUrls.join(',');
             } else if (!existingUrl) {
-                throw new Error("Debes seleccionar una imagen para el inmueble.");
+                throw new Error("Debes seleccionar un archivo (imagen o vídeo) para el inmueble.");
             }
             
             const payload = {
